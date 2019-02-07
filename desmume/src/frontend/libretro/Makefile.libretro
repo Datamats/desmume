@@ -218,10 +218,14 @@ else ifeq ($(platform), libnx)
 	CFLAGS	:=	 $(DEFINES) -g -O3 -ffast-math -funsafe-math-optimizations \
 					-fPIE -I$(DEVKITPRO)/libnx/include/ -I$(PORTLIBS)/include/ -include $(LIBNX)/include/switch.h -ffunction-sections -fdata-sections -ftls-model=local-exec -Wl,--allow-multiple-definition -specs=$(DEVKITPRO)/libnx/switch.specs
 	CFLAGS += $(INCDIRS)
-	CFLAGS	+= -D__SWITCH__ -DHAVE_LIBNX -march=armv8-a -mtune=cortex-a57 -mtp=soft -mcpu=cortex-a57+crc+fp+simd -lpthread
+	CFLAGS	+= -D__SWITCH__ -DHAVE_LIBNX -DHAVE_OPENGL -march=armv8-a -mtune=cortex-a57 -mtp=soft -mcpu=cortex-a57+crc+fp+simd -lpthread
 	CXXFLAGS := $(ASFLAGS) $(CFLAGS) -std=gnu++11
 	CFLAGS += -std=gnu11
 	STATIC_LINKING = 1
+	DESMUME_OPENGL = 1
+	DESMUME_OPENGL_CORE = 1
+	ARCHS = aarch64
+	NO_GCC = 1
 
 # Lightweight PS3 Homebrew SDK
 else ifeq ($(platform), psl1ght)

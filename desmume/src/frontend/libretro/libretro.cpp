@@ -32,6 +32,8 @@ static GLuint tex = 0;
 static GLuint current_texture_width = 0;
 static GLuint current_texture_height = 0;
 
+#if !defined(HAVE_LIBNX)
+
 typedef void (glBindFramebufferProc) (GLenum, GLuint);
 static glBindFramebufferProc *glBindFramebuffer = NULL;
 typedef void (glGenFramebuffersProc) (GLsizei, GLuint *);
@@ -44,6 +46,8 @@ typedef void (glBlitFramebufferProc) (GLint, GLint, GLint, GLint, GLint, GLint, 
 static glBlitFramebufferProc *glBlitFramebuffer = NULL;
 typedef void *(glMapBufferRangeProc) (GLenum, GLintptr, GLsizeiptr, GLbitfield);
 static glMapBufferRangeProc *glMapBufferRange = NULL;
+
+#endif
 
 static GLuint internal_format = GL_RGB565;
 static GLuint texture_format  = GL_UNSIGNED_SHORT_5_6_5;
@@ -1501,8 +1505,15 @@ static bool context_needs_reinit = false;
 #ifdef HAVE_OPENGL
 static bool initialize_gl()
 {
+	printf("initialize gl\n");
+
     OGLLoadEntryPoints_3_2_Func = OGLLoadEntryPoints_3_2;
     OGLCreateRenderer_3_2_Func = OGLCreateRenderer_3_2;
+
+	printf("gl check %d\n", hw_render.get_proc_address ("glGetString"));
+
+
+	printf("a\n");
 
     if (!NDS_3D_ChangeCore(GPU3D_OPENGL_AUTO))
     {
@@ -1511,6 +1522,7 @@ static bool initialize_gl()
         NDS_3D_ChangeCore(GPU3D_SOFTRASTERIZER);
         return false;
     }
+#if !defined(HAVE_LIBNX)
     glBindFramebuffer = (glBindFramebufferProc *) hw_render.get_proc_address ("glBindFramebuffer");
     glGenFramebuffers = (glGenFramebuffersProc *) hw_render.get_proc_address ("glGenFramebuffers");
     glDeleteFramebuffers = (glDeleteFramebuffersProc *) hw_render.get_proc_address ("glDeleteFramebuffers");
@@ -1525,6 +1537,7 @@ static bool initialize_gl()
         NDS_3D_ChangeCore(GPU3D_SOFTRASTERIZER);
         return false;
     }
+#endif
 
     return true;
 }
@@ -1544,7 +1557,7 @@ static void context_reset() {
    if (!context_needs_reinit)
       return;
 
-#ifdef HAVE_OPENGL
+#if defined(HAVE_OPENGL) && !defined(HAVE_LIBNX)
    initialize_gl();
 #endif
 

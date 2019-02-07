@@ -58,6 +58,13 @@
 		#define glBindVertexArray(id)			glBindVertexArrayAPPLE(id)
 		#define glDeleteVertexArrays(n, ids)	glDeleteVertexArraysAPPLE(n, ids)
 	#endif
+#elif defined(HAVE_LIBNX)
+    #include <glsym/glsym.h>
+
+	#define OGLEXT(procPtr, func)		procPtr func = NULL;
+	#define INITOGLEXT(procPtr, func)
+	#define EXTERNOGLEXT(procPtr, func)	extern procPtr func;
+    #define GLX_H
 #else
 	#include <GL/gl.h>
 	#include <GL/glext.h>

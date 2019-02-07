@@ -29,7 +29,6 @@
 
 RETRO_BEGIN_DECLS
 
-
 void conv_0rgb1555_argb8888(void *output, const void *input,
       int width, int height,
       int out_stride, int in_stride);
@@ -39,6 +38,10 @@ void conv_0rgb1555_rgb565(void *output, const void *input,
       int out_stride, int in_stride);
 
 void conv_rgb565_0rgb1555(void *output, const void *input,
+      int width, int height,
+      int out_stride, int in_stride);
+
+void conv_rgb565_abgr8888(void *output, const void *input,
       int width, int height,
       int out_stride, int in_stride);
 
@@ -97,4 +100,3 @@ void conv_copy(void *output, const void *input,
 RETRO_END_DECLS
 
 #endif
-

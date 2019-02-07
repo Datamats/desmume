@@ -33,6 +33,8 @@ RETRO_BEGIN_DECLS
 #define glTexCoord2f                rglTexCoord2f
 
 /* more forward-compatible GL subset symbols */
+#define glDrawRangeElementsBaseVertex rglDrawRangeElementsBaseVertex
+#define glProvokingVertex           rglProvokingVertex
 #define glGetInteger64v             rglGetInteger64v
 #define glGenSamplers               rglGenSamplers
 #define glBindSampler               rglBindSampler
@@ -148,7 +150,7 @@ RETRO_BEGIN_DECLS
 #define glUniformBlockBinding       rglUniformBlockBinding
 #define glGetUniformBlockIndex      rglGetUniformBlockIndex
 #define glGetActiveUniformBlockiv   rglGetActiveUniformBlockiv
-#define glBindBufferBase            rglBindBufferBase 
+#define glBindBufferBase            rglBindBufferBase
 #define glGetUniformIndices         rglGetUniformIndices
 #define glGetActiveUniformsiv       rglGetActiveUniformsiv
 #define glGetError                  rglGetError
@@ -469,6 +471,8 @@ void rglGetInteger64v(	GLenum pname,
 void rglUniform2iv(	GLint location,
  	GLsizei count,
  	const GLint *value);
+void rglProvokingVertex(	GLenum provokeMode);
+void rglDrawRangeElementsBaseVertex(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLvoid *indices, GLint basevertex);
 
 RETRO_END_DECLS
 

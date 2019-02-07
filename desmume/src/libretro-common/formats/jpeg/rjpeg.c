@@ -419,7 +419,7 @@ static INLINE int rjpeg__jpeg_huff_decode(rjpeg__jpeg *j, rjpeg__huffman *h)
 
    /* convert the huffman code to the symbol id */
    c = ((j->code_buffer >> (32 - k)) & rjpeg__bmask[k]) + h->delta[k];
-   assert((((j->code_buffer) >> (32 - h->size[c])) & rjpeg__bmask[h->size[c]]) == h->code[c]);
+   retro_assert((((j->code_buffer) >> (32 - h->size[c])) & rjpeg__bmask[h->size[c]]) == h->code[c]);
 
    /* convert the id to a symbol */
    j->code_bits -= k;
@@ -441,7 +441,7 @@ static INLINE int rjpeg__extend_receive(rjpeg__jpeg *j, int n)
 
    sgn = (int32_t)j->code_buffer >> 31; /* sign bit is always in MSB */
    k = rjpeg_lrot(j->code_buffer, n);
-   assert(n >= 0 && n < (int) (sizeof(rjpeg__bmask)/sizeof(*rjpeg__bmask)));
+   retro_assert(n >= 0 && n < (int) (sizeof(rjpeg__bmask)/sizeof(*rjpeg__bmask)));
    j->code_buffer = k & ~rjpeg__bmask[n];
    k &= rjpeg__bmask[n];
    j->code_bits -= n;
@@ -778,7 +778,6 @@ static INLINE uint8_t rjpeg__clamp(int x)
       return 255;
    return (uint8_t) x;
 }
-
 
 /* derived from jidctint -- DCT_ISLOW */
 #define RJPEG__IDCT_1D(s0,s1,s2,s3,s4,s5,s6,s7) \
@@ -1291,7 +1290,6 @@ static uint8_t rjpeg__get_marker(rjpeg__jpeg *j)
       x = rjpeg__get8(j->s);
    return x;
 }
-
 
 /* after a restart interval, rjpeg__jpeg_reset the entropy decoder and
  * the dc prediction
@@ -1866,7 +1864,6 @@ static int rjpeg__process_frame_header(rjpeg__jpeg *z, int scan)
    return 1;
 }
 
-
 static int rjpeg__decode_jpeg_header(rjpeg__jpeg *z, int scan)
 {
    int m;
@@ -2013,7 +2010,6 @@ static uint8_t*  rjpeg__resample_row_h_2(uint8_t *out, uint8_t *in_near,
 
    return out;
 }
-
 
 static uint8_t *rjpeg__resample_row_hv_2(uint8_t *out, uint8_t *in_near,
       uint8_t *in_far, int w, int hs)
@@ -2370,7 +2366,6 @@ static void rjpeg__setup_jpeg(rjpeg__jpeg *j)
    j->YCbCr_to_RGB_kernel      = rjpeg__YCbCr_to_RGB_row;
    j->resample_row_hv_2_kernel = rjpeg__resample_row_hv_2;
 
-
 #if defined(__SSE2__)
    if (mask & RETRO_SIMD_SSE2)
    {
@@ -2505,15 +2500,18 @@ static uint8_t *rjpeg_load_jpeg_image(rjpeg__jpeg *z,
       if (n >= 3)
       {
          uint8_t *y = coutput[0];
-         if (z->s->img_n == 3)
-            z->YCbCr_to_RGB_kernel(out, y, coutput[1], coutput[2], z->s->img_x, n);
-         else
-            for (i=0; i < z->s->img_x; ++i)
-            {
-               out[0] = out[1] = out[2] = y[i];
-               out[3] = 255; /* not used if n==3 */
-               out += n;
-            }
+         if (y)
+         {
+            if (z->s->img_n == 3)
+               z->YCbCr_to_RGB_kernel(out, y, coutput[1], coutput[2], z->s->img_x, n);
+            else
+               for (i=0; i < z->s->img_x; ++i)
+               {
+                  out[0] = out[1] = out[2] = y[i];
+                  out[3] = 255; /* not used if n==3 */
+                  out += n;
+               }
+         }
       }
       else
       {
